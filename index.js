@@ -56,6 +56,16 @@ const generateInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + 
 const generateAppleSpeed = () => !!generateInt(0, 1) ? (5 + Math.random(1)) : (5 - Math.random(1))
 const generateBombSpeed = () => !!generateInt(0, 1) ? (7 + Math.random(1)) : (7 - Math.random(1))
 
+function playDeathSound () {
+  _.sample([
+    sounds.tonguegrab,
+    sounds.thisembarassing,
+    sounds.howwude,
+    sounds.oops,
+    sounds.ohno
+  ]).cloneNode().play()
+}
+
 const updateGame = function () {
   if (dead) {
     if (13 in keysDown) {
@@ -65,7 +75,6 @@ const updateGame = function () {
     return
   }
   let drawBomb = generateInt(1, 200) === 6
-
   let drawApple = generateInt(1, 75) === 6
 
   // Add apples
@@ -130,13 +139,7 @@ const updateGame = function () {
       dead = true
       apples = []
       bombs = []
-      _.sample([
-        sounds.tonguegrab,
-        sounds.thisembarassing,
-        sounds.howwude,
-        sounds.oops,
-        sounds.ohno
-      ]).cloneNode().play()
+      playDeathSound()
     }
   })
 }
@@ -158,7 +161,8 @@ const render = function () {
   ctx.textAlign = 'left'
   ctx.textBaseline = 'top'
   if (!dead) {
-    ctx.fillText('Press space to eat\nScore: ' + score, 32, 32)
+    ctx.fillText('Press space to eat', 32, 32);
+    ctx.fillText('Score: ' + score, 32, 64)
   } else {
     ctx.fillText('You have died! Press enter to play again.', 32, 32)
   }
